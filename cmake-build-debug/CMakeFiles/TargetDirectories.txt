@@ -1,3 +1,0 @@
-C:/Code/C++/Clion/Einstein_Chess/cmake-build-debug/CMakeFiles/Einstein_Chess.dir
-C:/Code/C++/Clion/Einstein_Chess/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Code/C++/Clion/Einstein_Chess/cmake-build-debug/CMakeFiles/rebuild_cache.dir

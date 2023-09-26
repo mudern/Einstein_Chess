@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2023.1\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\Einstein_Chess.dir/objects.a
-C:\MinGW\bin\ar.exe qc CMakeFiles\Einstein_Chess.dir/objects.a @CMakeFiles\Einstein_Chess.dir\objects1
-C:\MinGW\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\Einstein_Chess.dir/objects.a -Wl,--no-whole-archive -o Einstein_Chess.exe -Wl,--out-implib,libEinstein_Chess.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Einstein_Chess.dir\linkLibs.rsp

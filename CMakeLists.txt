@@ -21,8 +21,6 @@ set(INC_DIR_CHESS_PIECE ./ChessPiece)
 #引入ChessPiece头文件
 include_directories(${INC_DIR_CHESS_PIECE})
 
-add_library(Einstein_Chess Board.cpp)
-
 add_executable(Einstein_Chess main.cpp)
 
 #将第三方库链接在一起
