@@ -1,0 +1,1 @@
+  -L"C:/Code/C++/Clion/Einstein_Chess/./fltk_x64-windows/lib"  -Wl,-Bstatic -lfltk_forms -lfltk -lfltk_gl -lfltk_images -lcomctl32 -Wl,-Bdynamic -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
