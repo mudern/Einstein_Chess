@@ -24,9 +24,11 @@ public:
     [[nodiscard]] int getSerialNum() const;
     [[nodiscard]] std::pair<int, int> getPosition() const;
     //棋子移动方法
-    bool move(Move move_kind);
+    bool move(Move _move_kind);
     //检测移动是否合法
-    bool can_move(Move move_kind);
+    bool canMove(Move _move_kind);
+    //返回预期的移动位置
+    std::pair<int,int> getExpectedPosition(Move _move_kind);
 };
 
 

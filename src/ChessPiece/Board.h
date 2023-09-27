@@ -17,10 +17,17 @@ private:
 public:
     //默认无参初始化棋盘
     Board();
+    // Getter 方法
+    [[nodiscard]] const std::vector<Chess> &getChessRedCollection() const;
+    [[nodiscard]] const std::vector<Chess> &getChessBlueCollection() const;
     //传入红蓝两个阵营棋子位置的Vector初始化棋盘
     Board(std::vector<int> red,std::vector<int> blue);
-    //返回棋子供上层操作
+    //返回指定的棋子供上层操作
     Chess getChess(Camp _camp,int _serial_num);
+    //传入指定的棋子和移动方向进行移动,可以移动返回true,不能移动返回false
+    bool moveChess(Camp _camp,int _serial_num,Move _move_kind);
+    //检测棋子移动后是否会重叠
+    bool isOverlap(std::pair<int,int> _expected_position);
 private:
     //作为两个构造函数调用的基函数
     void initializeBoard(std::vector<int> red,std::vector<int> blue);

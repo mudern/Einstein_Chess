@@ -10,6 +10,8 @@ enum Move{
     Horizontal,
     //垂直移动
     Vertical,
+    //斜向移动
+    Diagonal,
 };
 
 enum Camp{

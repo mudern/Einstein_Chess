@@ -22,39 +22,57 @@ std::pair<int, int> Chess::getPosition() const {
 }
 
 //棋子移动方法
-bool Chess::move(Move move_kind){
-    if(!can_move(move_kind)) return false;
-    // 红色方向右下角移动
-    if (camp == Camp::Red) {
-        if (move_kind == Move::Horizontal) {
-            position.first++; // 向右移动
-        } else { // Move::Vertical
-            position.second++; // 向下移动
-        }
-    }
-        // 蓝色方向左上角移动
-    else if (camp == Camp::Blue) {
-        if (move_kind == Move::Horizontal) {
-            position.first--; // 向左移动
-        } else { // Move::Vertical
-            position.second--; // 向上移动
-        }
-    }
+bool Chess::move(Move _move_kind){
+    if(!canMove(_move_kind)) return false;
+    position= getExpectedPosition(_move_kind);
     return true;
 }
 //检测移动是否合法
-bool Chess::can_move(Move move_kind){
-    if(move_kind==Move::Horizontal){
+bool Chess::canMove(Move _move_kind){
+    if(_move_kind==Move::Horizontal){
         //红色方到达最右侧无法水平移动
         if(position.first==5&&camp==Camp::Red) return false;
         //蓝色方到达最左侧无法水平移动
         if(position.first==1&&camp==Camp::Blue) return false;
     }
-    else{
+    else if(_move_kind==Move::Vertical) {
         //红色方到达最下侧无法垂直移动
-        if(position.second==5&&camp==Camp::Red) return false;
+        if (position.second == 5 && camp == Camp::Red) return false;
         //蓝色方到达最上侧无法垂直移动
-        if(position.second==1&&camp==Camp::Blue) return false;
+        if (position.second == 1 && camp == Camp::Blue) return false;
+    }
+    else if(_move_kind==Move::Diagonal){
+        //只有既能水平移动也能垂直移动才能斜向移动
+        return canMove(Move::Horizontal) && canMove(Move::Vertical);
     }
     return true;
+}
+
+std::pair<int, int> Chess::getExpectedPosition(Move _move_kind) {
+    // 红色方向右下角移动
+    if (camp == Camp::Red) {
+        if (_move_kind == Move::Horizontal) {
+            return {position.first+1,position.second};// 向右移动
+        }
+        else if(_move_kind==Move::Vertical){
+            return {position.first,position.second-1}; //向下移动
+        }
+        else if(_move_kind==Move::Diagonal){
+            //向右向下移动
+            return {position.first+1,position.second-1};
+        }
+    }
+        // 蓝色方向左上角移动
+    else if (camp == Camp::Blue) {
+        if (_move_kind == Move::Horizontal) {
+            return {position.first-1,position.second};// 向左移动
+        }
+        else if(_move_kind==Move::Vertical){
+            return {position.first,position.second+1};//向上移动
+        }
+        else if(_move_kind==Move::Diagonal){
+            //向左向上移动
+            return {position.first-1,position.second+1};
+        }
+    }
 }

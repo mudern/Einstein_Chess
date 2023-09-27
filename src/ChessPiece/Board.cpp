@@ -5,10 +5,6 @@
 #include <algorithm>
 #include "Board.h"
 
-bool chess_sort(Chess chess_1, Chess chess_2) {
-    return chess_1.getSerialNum() <= chess_2.getSerialNum();
-}
-
 Board::Board(std::vector<int> red, std::vector<int> blue) {
     //注意:这里使用move语法,red和blue最后会被清理销毁
     initializeBoard(std::move(red), std::move(blue));
@@ -17,6 +13,19 @@ Board::Board(std::vector<int> red, std::vector<int> blue) {
 //以{1, 3, 6, 2, 5, 4}作为初始化列表委托构造
 Board::Board() {
     initializeBoard({1, 3, 6, 2, 5, 4}, {1, 3, 6, 2, 5, 4});
+}
+
+const std::vector<Chess> &Board::getChessRedCollection() const {
+    return chess_red_collection;
+}
+
+const std::vector<Chess> &Board::getChessBlueCollection() const {
+    return chess_blue_collection;
+}
+
+//将棋子的序号作为排序依据,用于初始化棋盘
+bool chess_sort(Chess chess_1, Chess chess_2) {
+    return chess_1.getSerialNum() <= chess_2.getSerialNum();
 }
 
 void Board::initializeBoard(std::vector<int> red, std::vector<int> blue) {
@@ -39,4 +48,21 @@ void Board::initializeBoard(std::vector<int> red, std::vector<int> blue) {
 Chess Board::getChess(Camp _camp, int _serial_num) {
     if(_camp==Camp::Red) return chess_red_collection[_serial_num-1];
     else return chess_blue_collection[_serial_num-1];
+}
+
+bool Board::isOverlap(std::pair<int,int> _expected_position){
+    auto red_target=std::find_if(chess_red_collection.begin(), chess_red_collection.end(),
+                                 [_expected_position](Chess chess){return chess.getPosition()==_expected_position;});
+    auto blue_target=std::find_if(chess_blue_collection.begin(), chess_blue_collection.end(),
+                                 [_expected_position](Chess chess){return chess.getPosition()==_expected_position;});
+    return red_target!=chess_red_collection.end()||blue_target!=chess_blue_collection.end();
+}
+
+//移动棋盘上的棋子.检测移动后的位置是否存在棋子,检测是否会移出棋盘
+bool Board::moveChess(Camp _camp, int _serial_num, Move _move_kind) {
+    Chess chess = getChess(_camp,_serial_num);
+    std::pair<int,int> expected_position =chess.getExpectedPosition(_move_kind);
+    //如果棋子重叠则不能进行移动,返回false
+    if(isOverlap(expected_position)) return false;
+    return chess.move(_move_kind);
 }
