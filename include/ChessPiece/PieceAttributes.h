@@ -5,6 +5,11 @@
 #ifndef EINSTEIN_CHESS_PIECE_ATTRIBUTES_H
 #define EINSTEIN_CHESS_PIECE_ATTRIBUTES_H
 
+/*
+ * 该文件用于提供标识棋子状态的两种enum类型
+ * Move标识移动的类型,包括水平移动,垂直移动和斜向移动
+ * Camp标识棋子的阵营,包括先手处于左上角的红方和后手处于右下角的蓝方
+ */
 enum Move{
     //水平移动
     Horizontal,

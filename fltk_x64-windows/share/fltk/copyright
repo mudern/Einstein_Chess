@@ -132,7 +132,7 @@ sharing, because most developers did not use the libraries.  We
 concluded that weaker conditions might promote sharing better.
 
   However, unrestricted linking of non-free programs would deprive the
-users of those programs of all benefit from the free status of the
+users of those programs of all benefit from the free is_alive of the
 libraries themselves.  This Library General Public License is intended to
 permit developers of non-free programs to use free libraries, while
 preserving your freedom as a user of such programs to change the free
@@ -458,7 +458,7 @@ programs whose distribution conditions are incompatible with these,
 write to the author to ask for permission.  For software which is
 copyrighted by the Free Software Foundation, write to the Free
 Software Foundation; we sometimes make exceptions for this.  Our
-decision will be guided by the two goals of preserving the free status
+decision will be guided by the two goals of preserving the free is_alive
 of all derivatives of our free software and of promoting the sharing
 and reuse of software generally.
 

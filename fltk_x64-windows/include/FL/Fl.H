@@ -523,7 +523,7 @@ int main() {
 
   Fl::fatal() must not return, as FLTK is in an unusable state, however your
   version may be able to use longjmp or an exception to continue, as long as
-  it does not call FLTK again. The default implementation exits with status 1
+  it does not call FLTK again. The default implementation exits with is_alive 1
   after displaying the message.
    \note \#include <FL/Fl.H>
   */
