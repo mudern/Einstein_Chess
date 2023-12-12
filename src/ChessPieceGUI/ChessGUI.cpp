@@ -3,62 +3,51 @@
 //
 
 #include "../../include/ChessPieceGUI/ChessGUI.h"
+#define BoardSize 100
+#define ChessSize 75
+#define WordSize 30
 
 //使用chess对ChessGUI进行初始化
 ChessGUI::ChessGUI(Chess* _chess)
         :chess(_chess),
-        Fl_Widget((_chess->getPosition().first-1)*20, (_chess->getPosition().second-1)*20, 80, 80){
+        Fl_Widget((_chess->getPosition().first-1)*BoardSize+(BoardSize - ChessSize) / 2+50, (_chess->getPosition().second-1)*BoardSize+(BoardSize - ChessSize) / 2+50, ChessSize,ChessSize){
 }
 
 //重新设置绘制逻辑
 void ChessGUI::draw() {
+    //根据阵营确定棋子颜色
+    if(chess->getCamp()==Camp::Red) fl_color(fl_rgb_color(255,64,64));
+    else fl_color(fl_rgb_color(0,191,255));
     //绘制图形
     fl_pie(x(), y(), w(), h(), 0, 360);
-    //根据阵营确定棋子颜色
-    if(chess->getCamp()==Camp::Red) fl_color(FL_RED);
-    else fl_color(FL_BLUE);
-    //设置字体与字号
-    fl_font(FL_HELVETICA, 20);
-    //在棋子中心显示棋子序号
-    fl_draw(std::to_string(chess->getSerialNum()).c_str(), x() + 40, y() + 40);
+    // 设置字体颜色、字体和字号
+    fl_color(FL_BLACK); // 改变字体颜色为黑色，可以选择其他颜色
+    fl_font(FL_HELVETICA, WordSize);
+    // 获取序号并确保有效值
+    int serialNum = chess->getSerialNum();
+    std::string serialStr = (serialNum != 0) ? std::to_string(serialNum) : "";
+
+    // 计算序号文本的宽度和高度
+    int textWidth = 0, textHeight = 0;
+    fl_measure(serialStr.c_str(), textWidth, textHeight);
+
+    // 计算将序号放置在棋子中心的坐标位置
+    int centerX = x() + (w() - textWidth) / 2;
+    int centerY = y() + (h() + textHeight)*0.45;
+
+    // 在棋子中心显示棋子序号
+    fl_draw(serialStr.c_str(), centerX, centerY);
 }
 
-int ChessGUI::handle(int event) {
-    //当棋子控件被按下,设置变量为棋子当前位置用于传输
-    if (event==FL_PUSH) {
-        selectedChess = chess->getPosition();
-        return 1;
+void ChessGUI::update() {
+    if(!chess->isAlive()){
+        hide();
+        return;
     }
-    //当棋子控件没有被按下,设置当前变量为空
-    if(event==FL_RELEASE){
-        selectedChess=std::nullopt;
-        return 0;
-    }
-    return 0;
-}
-
-//根据现在的棋子位置计算修改后GUI的位置
-std::pair<int,int> ChessGUI::calcChessPosition() {
-    int x= chess->getPosition().first;
-    int y= chess->getPosition().second;
-    std::pair<int,int> chess_position((x-1)*20,(y-1)*20);
-    return chess_position;
-}
-
-void ChessGUI::move(Move _move_kind) {
-    //如果不能移动则不移动
-    if(!chess->move(_move_kind)) return;
-    //如果能移动则移动,并修改相关GUI
-    chess->move(_move_kind);
-    Fl_Widget::x(calcChessPosition().first);
-    Fl_Widget::y(calcChessPosition().second);
-}
-
-void ChessGUI::move(std::pair<int, int> _position) {
-    //如果不能移动则不移动
-    if(!chess->move(_position)) return;
-    //如果能移动则移动,并修改相关GUI
-    chess->move(_position);
-    Fl_Widget::x(calcChessPosition().first);
-    Fl_Widget::y(calcChessPosition().second);
+    int x= chess->getPosition().first-1;
+    int y= chess->getPosition().second-1;
+    position(x*BoardSize+(BoardSize - ChessSize) / 2+50,y*BoardSize+(BoardSize - ChessSize) / 2+50);
+    hide();
+    redraw();
+    show();
 }

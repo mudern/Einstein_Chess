@@ -32,13 +32,13 @@ void Chess::setIsAlive(bool _status) {
 //棋子移动方法
 bool Chess::move(Move _move_kind){
     if(!canMove(_move_kind)) return false;
-    position= *getExpectedPosition(_move_kind);
+    position= getExpectedPosition(_move_kind).value();
     return true;
 }
 bool Chess::move(std::pair<int, int> _position) {
     if(!canMove(_position)) return false;
     position=_position;
-    return false;
+    return true;
 }
 
 /*
@@ -68,8 +68,8 @@ bool Chess::canMove(Move _move_kind){
  * 获取棋子想要移动的位置,返回是否可以进行该移动
  */
 bool Chess::canMove(std::pair<int, int> _position) {
-    if(!getMoveKind(_position)){
-        Move move_kind=*getMoveKind(_position);
+    if(getMoveKind(_position)){
+        Move move_kind=getMoveKind(_position).value();
         return canMove(move_kind);
     }else{
         return false;
@@ -89,24 +89,24 @@ std::optional<std::pair<int, int>> Chess::getExpectedPosition(Move _move_kind) {
             return std::pair<int,int>{position.first+1,position.second};// 向右移动
         }
         else if(_move_kind==Move::Vertical){
-            return std::pair<int,int>{position.first,position.second-1}; //向下移动
+            return std::pair<int,int>{position.first,position.second+1}; //向下移动
         }
         else if(_move_kind==Move::Diagonal){
             //向右向下移动
-            return std::pair<int,int>{position.first+1,position.second-1};
+            return std::pair<int,int>{position.first+1,position.second+1};
         }
     }
-        // 蓝色方向左上角移动
+    // 蓝色方向左上角移动
     else if (camp == Camp::Blue) {
         if (_move_kind == Move::Horizontal) {
             return std::pair<int,int>{position.first-1,position.second};// 向左移动
         }
         else if(_move_kind==Move::Vertical){
-            return std::pair<int,int>{position.first,position.second+1};//向上移动
+            return std::pair<int,int>{position.first,position.second-1};//向上移动
         }
         else if(_move_kind==Move::Diagonal){
             //向左向上移动
-            return std::pair<int,int>{position.first-1,position.second+1};
+            return std::pair<int,int>{position.first-1,position.second-1};
         }
     }
 }
@@ -119,15 +119,15 @@ std::optional<Move> Chess::getMoveKind(std::pair<int, int> _position) {
     std::optional<Move> move_kind = std::nullopt;
     //如果是红方则差值为正数
     if (camp == Camp::Red) {
-        if (difference == std::pair<int, int>(1, 0))*move_kind = Horizontal;
-        if (difference == std::pair<int, int>(0, 1))*move_kind = Vertical;
-        if (difference == std::pair<int, int>(1, 1))*move_kind = Diagonal;
+        if (difference == std::pair<int, int>(1, 0))move_kind = Horizontal;
+        if (difference == std::pair<int, int>(0, 1))move_kind = Vertical;
+        if (difference == std::pair<int, int>(1, 1))move_kind = Diagonal;
     }
     //如果是蓝方则差值为负数
     if (camp == Camp::Blue) {
-        if (difference == std::pair<int, int>(-1, 0))*move_kind = Horizontal;
-        if (difference == std::pair<int, int>(0, -1))*move_kind = Vertical;
-        if (difference == std::pair<int, int>(-1, -1))*move_kind = Diagonal;
+        if (difference == std::pair<int, int>(-1, 0))move_kind = Horizontal;
+        if (difference == std::pair<int, int>(0, -1))move_kind = Vertical;
+        if (difference == std::pair<int, int>(-1, -1))move_kind = Diagonal;
     }
     return move_kind;
 }

@@ -8,9 +8,25 @@
 
 #include <vector>
 #include <memory>
+#include <FL/Fl_Button.H>
+#include <Fl/Fl_Choice.H>
 #include "ChessGUI.h"
-#include "BoardPiece.h"
 #include "../ChessPiece/Board.h"
+#include "../GameGUI/GameGUI.h"
+
+class BoardPiece;
+
+enum GameStatus{
+    Ready,
+    Running,
+    End,
+};
+
+enum GameMode{
+    PvP,
+    PvAI,
+    AIvAI,
+};
 
 /*
  * 该类表示棋局本身,通过引入ChessGUI指针间接引入棋子,通过存储Board指针简介引入棋盘
@@ -18,26 +34,61 @@
  * 存储棋子控件的vector将初始化ChessGUI类实例,并将实例所有指针指向Board类中包含的Chess类,实现棋子GUI化
  * 通过操控Board类和已经实例化的ChessGUI类可以实现对棋盘和棋子的控制
  */
-class BoardGUI:Fl_Group{
+class BoardGUI{
 private:
     //存储棋子控件
-    std::vector<std::unique_ptr<ChessGUI>> red_chess_widgets;
-    std::vector<std::unique_ptr<ChessGUI>> blue_chess_widgets;
+    std::vector<ChessGUI*> red_chess_widgets;
+    std::vector<ChessGUI*> blue_chess_widgets;
     //存储Board
     Board *board;
     //存储BoardPiece
-    std::vector<BoardPiece> board_pieces;
+    std::vector<BoardPiece*> board_pieces;
     //存储当前被选中棋子信息
-    int selected_chess;
+    int selected_chess=-1;
     //存储当前操作的阵营
     Camp now_camp=Camp::Red;
     Camp next_camp=Camp::Blue;
     //存储当前输入的值
     std::optional<int> input_chess_serial_num=std::nullopt;
+    //修改游戏下拉框选项
+    GameGUI *gameGui;
+    //判断游戏模式和游戏状态
+    GameStatus game_status=GameStatus::Ready;
+    GameMode game_mode;
+    //人机模式是否人先
+    bool player_first;
 public:
-    bool handleClick(std::pair<int,int> _position);
+    BoardGUI(GameGUI* game,std::vector<int> red_chess,std::vector<int> blue_chess);
+    void setGameMode(GameMode gameMode);
+    void setSelectedChess(int selectedChess);
+    void setGameStatus(GameStatus gameStatus);
+    GameStatus getGameStatus() const;
+    void setNowCamp(Camp nowCamp);
+    Camp getNowCamp() const;
+    void setPlayerFirst(bool humanFirst);
+
+    bool move(std::pair<int,int> _position);
+    bool move(Move _move_kind);
     void toNextCamp();
-    Chess getSelectedChess();
+    Chess & getSelectedChess();
+    std::vector<int> send_alive_chess();
+private:
+    void computer_move();
+    void display_move(Camp _camp_1,std::pair<int,int> _position,int _chess_1,Camp _camp_2, int _chess_2);
+    void display_move(Camp _camp_1,std::pair<int,int> _position,int _chess_1);
+    void display_camp();
+    void display(std::string content);
+    void end_game();
+    void save_log();
+};
+
+class BoardPiece : public Fl_Button{
+//使用Board引用与Board类进行通信
+    BoardGUI *board;
+    std::pair<int,int> position;
+public:
+    BoardPiece(int a,int b,int x,int y,int w,int h,BoardGUI* board);
+    int handle(int event) override;
 };
 
 #endif //EINSTEIN_CHESS_BOARDGUI_H

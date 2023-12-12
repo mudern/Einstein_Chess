@@ -6,6 +6,7 @@
       <file path="$PROJECT_DIR$/include" />
       <file path="$PROJECT_DIR$/src/ChessPiece" />
       <file path="$PROJECT_DIR$/src/ChessPieceGUI" />
+      <file path="$PROJECT_DIR$/src/GameGUI" />
     </sourceRoots>
   </component>
 </project>

@@ -24,14 +24,10 @@
 class ChessGUI:Fl_Widget{
 private:
     Chess* chess;
-    std::optional<std::pair<int,int>> selectedChess=std::nullopt;
 public:
     ChessGUI(Chess *_chess);
     void draw() override;
-    int handle(int event) override;
-    std::pair<int,int> calcChessPosition();
-    void move(Move _move_kind);
-    void move(std::pair<int,int> _position);
+    void update();
 };
 
 
