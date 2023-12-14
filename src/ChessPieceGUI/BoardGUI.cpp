@@ -125,34 +125,26 @@ BoardGUI::BoardGUI(GameGUI* game,std::vector<int> red_chess,std::vector<int> blu
 }
 
 void BoardGUI::display(std::string content) {
-    gameGui->display(content);
+    gameGui->display(std::move(content));
 }
 
-void BoardGUI::display_move(Camp _camp_1,std::pair<int,int> _position, int _chess_1,Camp _camp_2, int _chess_2) {
-    std::string context;
-    if(_camp_1==Camp::Red) context+="红方 ";
-    else context+="蓝方 ";
-    context+=std::to_string(_chess_1);
-    context+=" 号棋子";
-    context+="移动到位置";
-    context+=(std::to_string(_position.first)+","+std::to_string(_position.second));
-    context+=" 吃掉";
-    if(_camp_2==Camp::Red) context+="红方";
-    else context+="蓝方";
-    context+=std::to_string(_chess_2);
-    context+=" 号棋子";
-    display(context);
+void BoardGUI::display_move(Camp _camp_1, std::pair<int, int> _position, int _chess_1, Camp _camp_2, int _chess_2) {
+    std::ostringstream oss;
+
+    oss << (_camp_1 == Camp::Red ? "红方" : "蓝方") << _chess_1 << "号棋子"
+        << "移动到位置" << "(" << _position.first << "," << _position.second << ") 吃掉"
+        << (_camp_2 == Camp::Red ? "红方" : "蓝方") << _chess_2 << "号棋子";
+
+    display(oss.str());
 }
 
-void BoardGUI::display_move(Camp _camp_1,std::pair<int,int> _position, int _chess_1) {
-    std::string context;
-    if(_camp_1==Camp::Red) context+="红方 ";
-    else context+="蓝方 ";
-    context+=std::to_string(_chess_1);
-    context+=" 号棋子";
-    context+="移动到位置";
-    context+=(std::to_string(_position.first)+","+std::to_string(_position.second));
-    display(context);
+void BoardGUI::display_move(Camp _camp_1, std::pair<int, int> _position, int _chess_1) {
+    std::ostringstream oss;
+
+    oss << (_camp_1 == Camp::Red ? "红方" : "蓝方") << " " << _chess_1 << "号棋子"
+        << "移动到位置" << "(" << _position.first << "," << _position.second << ")";
+
+    display(oss.str());
 }
 
 void BoardGUI::display_camp() {

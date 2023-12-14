@@ -42,7 +42,7 @@
     #include <FL/filename.H>
     [..]
     const char *out;
-    out = fl_filename_name("/usr/lib");     // out="lib"
+    out = fl_filename_name("/usr/lib_gcc");     // out="lib_gcc"
     out = fl_filename_name("/usr/");        // out=""      (basename(3) returns "usr" instead)
     out = fl_filename_name("/usr");         // out="usr"
     out = fl_filename_name("/");            // out=""      (basename(3) returns "/" instead)

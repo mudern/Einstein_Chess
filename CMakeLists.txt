@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(INC_DIR_FLTK ./fltk_x64-windows/include)
 
 #声明FLTK链接库路径
-set(LINK_DIR_FLTK ./fltk_x64-windows/lib)
+if(MSVC)
+    set(LINK_DIR_FLTK fltk_x64-windows/lib_MSVC)
+else()
+    set(LINK_DIR_FLTK fltk_x64-windows/lib_gcc)
+endif()
 
 #引入FLTK头文件
 include_directories(${INC_DIR_FLTK})
@@ -44,4 +48,8 @@ set(Sources
 add_executable(Einstein_Chess main.cpp ${Sources})
 
 #将第三方库链接在一起
-target_link_libraries(Einstein_Chess libfltk_forms.a libfltk.a libfltk_gl.a libfltk_images.a libcomctl32.a)
+if(MSVC)
+    target_link_libraries(Einstein_Chess fltk.lib fltk_forms.lib fltk_gl.lib fltk_images.lib comctl32)
+else()
+    target_link_libraries(Einstein_Chess libfltk_forms.a libfltk.a libfltk_gl.a libfltk_images.a libcomctl32.a)
+endif()

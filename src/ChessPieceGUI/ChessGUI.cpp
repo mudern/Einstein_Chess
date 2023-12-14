@@ -3,6 +3,7 @@
 //
 
 #include "../../include/ChessPieceGUI/ChessGUI.h"
+#include <string>
 #define BoardSize 100
 #define ChessSize 75
 #define WordSize 30

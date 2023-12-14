@@ -200,7 +200,7 @@ inline void fl_reset_focus_object(Fl_Widget* o) {Fl::focus(o);}
 inline void fl_set_object_boxtype(Fl_Widget* o, Fl_Boxtype a) {o->box(a);}
 inline void fl_set_object_lsize(Fl_Widget* o,int s) {o->labelsize(s);}
 
-/* forms lib font indexes must be byte sized - extract correct byte from style word */
+/* forms lib_gcc font indexes must be byte sized - extract correct byte from style word */
 inline void fl_set_object_lstyle(Fl_Widget* o,int a) {
   o->labelfont((Fl_Font)(a&0xff)); o->labeltype((Fl_Labeltype)(a>>8));}
 inline void fl_set_object_lcol(Fl_Widget* o, Fl_Color a) {o->labelcolor(a);}

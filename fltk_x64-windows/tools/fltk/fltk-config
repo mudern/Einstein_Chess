@@ -52,7 +52,7 @@ CAIROFLAGS=""
 # Check for local invocation, and update paths accordingly...
 if test -f "$selfdir/FL/Fl_Window.H"; then
 	includedir="$selfdir"
-	libdir="$selfdir/lib"
+	libdir="$selfdir/lib_gcc"
 
 	if test -f "$libdir/libfltk_jpeg.a"; then
 		CFLAGS="-I$includedir/jpeg $CFLAGS"
@@ -81,7 +81,7 @@ if test -f "$libdir/libfltk_cairo.a"; then
 fi
 
 # libraries to link with:
-LIBNAME="${exec_prefix}/lib/libfltk.a"
+LIBNAME="${exec_prefix}/lib_gcc/libfltk.a"
 DSONAME=""
 DSOLINK=""
 IMAGELIBS="-ljpeg -lpng -lz"
