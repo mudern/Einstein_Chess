@@ -1,5 +1,5 @@
-//
-// Created by ÄÂçüöÎ on 2023/12/7.
+ï»¿//
+// Created by ç©†ç°é‘« on 2023/12/7.
 //
 
 #include <utility>
@@ -12,8 +12,8 @@ GameGUI::GameGUI(std::vector<int> red_chess,std::vector<int> blue_chess) {
     window = new Fl_Window(1050, 600, "Game GUI");
     window->color(fl_rgb_color(255 ,240 ,245));
 
-    // ÉÏÃæµÄ°´Å¥
-    auto *spacer1 = new Fl_Box(600, 0, 400, 50); // ¶¥²¿¿Õ°×ÇøÓò
+    // ä¸Šé¢çš„æŒ‰é’®
+    auto *spacer1 = new Fl_Box(600, 0, 400, 50); // é¡¶éƒ¨ç©ºç™½åŒºåŸŸ
     horizontalButton = new Fl_Button(600, 50, 100, 100, "Horizontal");
     horizontalButton->callback(horizontalButtonClick, this);
     horizontalButton->color(fl_rgb_color(191 ,239 ,255));
@@ -23,8 +23,8 @@ GameGUI::GameGUI(std::vector<int> red_chess,std::vector<int> blue_chess) {
     diagonalButton = new Fl_Button(900, 50, 100, 100, "Diagonal");
     diagonalButton->callback(diagonalButtonClick, this);
     diagonalButton->color(fl_rgb_color(191 ,239 ,255));
-    // ÖĞ¼äµÄÎÄ±¾¿òºÍ°´Å¥
-    auto *spacer2 = new Fl_Box(600, 150, 400, 50); // ÖĞ¼ä¿Õ°×ÇøÓò
+    // ä¸­é—´çš„æ–‡æœ¬æ¡†å’ŒæŒ‰é’®
+    auto *spacer2 = new Fl_Box(600, 150, 400, 50); // ä¸­é—´ç©ºç™½åŒºåŸŸ
     numberInput = new Fl_Choice(600, 250, 100, 50, "Input:");
     numberInput->color(fl_rgb_color(255 ,250 ,250));
 
@@ -36,34 +36,34 @@ GameGUI::GameGUI(std::vector<int> red_chess,std::vector<int> blue_chess) {
     randomButton->callback(randomButtonClick,this);
     randomButton->color(fl_rgb_color(255 ,130 ,171));
 
-    // ÏÂÃæµÄĞÅÏ¢ÏÔÊ¾ÎÄ±¾¿ò
-    auto *spacer3 = new Fl_Box(0, 550, 1050, 50); // µ×²¿¿Õ°×ÇøÓò
+    // ä¸‹é¢çš„ä¿¡æ¯æ˜¾ç¤ºæ–‡æœ¬æ¡†
+    auto *spacer3 = new Fl_Box(0, 550, 1050, 50); // åº•éƒ¨ç©ºç™½åŒºåŸŸ
     infoTextDisplay = new Fl_Text_Display(600, 350, 200, 200, "Information");
     textBuffer = new Fl_Text_Buffer();
     infoTextDisplay->color(fl_rgb_color(240 ,255 ,240));
     infoTextDisplay->buffer(textBuffer);
 
-    //ÏÂÀ­ÌõÑ¡ÔñÄ£Ê½
+    //ä¸‹æ‹‰æ¡é€‰æ‹©æ¨¡å¼
     modeChoice = new Fl_Choice(825, 350, 175, 50, "");
     modeChoice->add(" Player V Player ");
     modeChoice->add(" Player V Computer");
     modeChoice->add(" Computer V Computer");
     modeChoice->color(fl_rgb_color(240 , 255 , 240));
 
-    //¿ªÊ¼ÓÎÏ·°´Å¥
+    //å¼€å§‹æ¸¸æˆæŒ‰é’®
     playButton = new Fl_Button(875,450,100,100,"Play");
     playButton->color(fl_rgb_color(144 ,238 ,144));
     playButton->callback(playButtonClick,this);
 
-    auto *spacer4 = new Fl_Box(0, 0, 600, 50);//ÆåÅÌ¿Õ°×
-    // ÆåÅÌ²¿·Ö
+    auto *spacer4 = new Fl_Box(0, 0, 600, 50);//æ£‹ç›˜ç©ºç™½
+    // æ£‹ç›˜éƒ¨åˆ†
     boardGroup = new Fl_Group(50, 50, 500, 500);
     boardGui=new BoardGUI(this,std::move(red_chess),std::move(blue_chess));
     boardGroup->end();
 
     update_num();
 
-    // ¿Ø¼ş²¿·Ö
+    // æ§ä»¶éƒ¨åˆ†
     controlGroup = new Fl_Group(600, 0, 400, 600);
 
     controlGroup->end();
@@ -79,7 +79,7 @@ void GameGUI::start() {
 void GameGUI::horizontalButtonClick(Fl_Widget *widget, void *data) {
     auto* instance = static_cast<GameGUI*>(data);
     if(instance->boardGui->getGameStatus()!=GameStatus::Running){
-        instance->display("ÇëÏÈÑ¡ÔñÄ£Ê½²¢¿ªÊ¼ÓÎÏ·");
+        instance->display("è¯·å…ˆé€‰æ‹©æ¨¡å¼å¹¶å¼€å§‹æ¸¸æˆ");
         return;
     }
     instance->horizontal_move();
@@ -88,7 +88,7 @@ void GameGUI::horizontalButtonClick(Fl_Widget *widget, void *data) {
 void GameGUI::verticalButtonClick(Fl_Widget *widget, void *data) {
     auto* instance = static_cast<GameGUI*>(data);
     if(instance->boardGui->getGameStatus()!=GameStatus::Running){
-        instance->display("ÇëÏÈÑ¡ÔñÄ£Ê½²¢¿ªÊ¼ÓÎÏ·");
+        instance->display("è¯·å…ˆé€‰æ‹©æ¨¡å¼å¹¶å¼€å§‹æ¸¸æˆ");
         return;
     }
     instance->vertical_move();
@@ -97,7 +97,7 @@ void GameGUI::verticalButtonClick(Fl_Widget *widget, void *data) {
 void GameGUI::diagonalButtonClick(Fl_Widget *widget, void *data) {
     auto* instance = static_cast<GameGUI*>(data);
     if(instance->boardGui->getGameStatus()!=GameStatus::Running){
-        instance->display("ÇëÏÈÑ¡ÔñÄ£Ê½²¢¿ªÊ¼ÓÎÏ·");
+        instance->display("è¯·å…ˆé€‰æ‹©æ¨¡å¼å¹¶å¼€å§‹æ¸¸æˆ");
         return;
     }
     instance->diagonal_move();
@@ -106,7 +106,7 @@ void GameGUI::diagonalButtonClick(Fl_Widget *widget, void *data) {
 void GameGUI::sendButtonClcik(Fl_Widget *widget, void *data) {
     auto* instance = static_cast<GameGUI*>(data);
     if(instance->boardGui->getGameStatus()!=GameStatus::Running){
-        instance->display("ÇëÏÈÑ¡ÔñÄ£Ê½²¢¿ªÊ¼ÓÎÏ·");
+        instance->display("è¯·å…ˆé€‰æ‹©æ¨¡å¼å¹¶å¼€å§‹æ¸¸æˆ");
         return;
     }
     instance->send_num();
@@ -115,7 +115,7 @@ void GameGUI::sendButtonClcik(Fl_Widget *widget, void *data) {
 void GameGUI::randomButtonClick(Fl_Widget *widget, void *data) {
     auto* instance = static_cast<GameGUI*>(data);
     if(instance->boardGui->getGameStatus()!=GameStatus::Running){
-        instance->display("ÇëÏÈÑ¡ÔñÄ£Ê½²¢¿ªÊ¼ÓÎÏ·");
+        instance->display("è¯·å…ˆé€‰æ‹©æ¨¡å¼å¹¶å¼€å§‹æ¸¸æˆ");
         return;
     }
     instance->generate_num();
@@ -150,12 +150,12 @@ void GameGUI::send_num() {
     if(index==-1) return;
     auto str=numberInput->text(index);
     int selected_num=str[0]-'0';
-    //Èç¹ûĞ£ÑéÍ¨¹ı,ÔòÑ¡Ôñ²¢¹ã²¥½á¹û,·ñÔò½øÈëÖØÑ¡Ôñ
+    //å¦‚æœæ ¡éªŒé€šè¿‡,åˆ™é€‰æ‹©å¹¶å¹¿æ’­ç»“æœ,å¦åˆ™è¿›å…¥é‡é€‰æ‹©
     std::optional<std::pair<int,int>> check_result=boardGui->validate_and_get_choice(selected_num);
     if(!check_result){
         sendButton->label("Send");
         std::stringstream context;
-        context << "µ±Ç°Ñ¡Ôñ" << ((boardGui->getNowCamp() == Camp::Red) ? "ºì·½" : "À¶·½") << str << "ºÅÆå×Ó";
+        context << "å½“å‰é€‰æ‹©" << ((boardGui->getNowCamp() == Camp::Red) ? "çº¢æ–¹" : "è“æ–¹") << str << "å·æ£‹å­";
         display(context.str());
         boardGui->setSelectedChess(str[0]-'0');
     }else{
@@ -169,26 +169,26 @@ void GameGUI::send_num() {
         std::stringstream context;
         if(smaller!=-1) numberInput->add(std::to_string(smaller).c_str());
         if(bigger!=-1) numberInput->add(std::to_string(bigger).c_str());
-        context << "Ëæ»úÊı×ÖÎŞĞ§,¿ÉÒÔÑ¡Ôñ";
-        if(smaller!=-1&&bigger!=-1) context<<smaller_str<<"»ò"<<bigger_str<<"Æå×Ó";
+        context << "éšæœºæ•°å­—æ— æ•ˆ,å¯ä»¥é€‰æ‹©";
+        if(smaller!=-1&&bigger!=-1) context<<smaller_str<<"æˆ–"<<bigger_str<<"æ£‹å­";
         else{
-            if(smaller!=-1) context<<smaller<<"Æå×Ó";
-            if(bigger!=-1) context<<bigger<<"Æå×Ó";
+            if(smaller!=-1) context<<smaller<<"æ£‹å­";
+            if(bigger!=-1) context<<bigger<<"æ£‹å­";
         }
         display(context.str());
     }
 }
 
 void GameGUI::generate_num() {
-    std::random_device rd; // ´´½¨ÕæÕıµÄËæ»úÊıÉú³ÉÆ÷
-    std::mt19937 gen(rd()); // Ê¹ÓÃ random_device ×÷ÎªÖÖ×Ó
+    std::random_device rd; // åˆ›å»ºçœŸæ­£çš„éšæœºæ•°ç”Ÿæˆå™¨
+    std::mt19937 gen(rd()); // ä½¿ç”¨ random_device ä½œä¸ºç§å­
 
     std::uniform_int_distribution<int> distribution(0, numberInput->size() - 2);
 
-    int random_index = distribution(gen); // Éú³ÉËæ»úË÷Òı
+    int random_index = distribution(gen); // ç”Ÿæˆéšæœºç´¢å¼•
     numberInput->value(random_index);
     std::string random_num = numberInput->text(numberInput->value());
-    display("Ëæ»úÊı×ÖÎª:" + random_num);
+    display("éšæœºæ•°å­—ä¸º:" + random_num);
 }
 
 void GameGUI::update_num() {
@@ -202,17 +202,17 @@ enum GameMode;
 void GameGUI::send_game_mode() {
     if(is_play){
         if(modeChoice->value()==-1){
-            display("Î´Ñ¡ÔñÄ£Ê½,ÎŞ·¨¿ªÊ¼ÓÎÏ·");
+            display("æœªé€‰æ‹©æ¨¡å¼,æ— æ³•å¼€å§‹æ¸¸æˆ");
             return;
         }
         if(modeChoice->value()==0){
-            display("µ±Ç°Ñ¡Ôñ:Player V Player");
+            display("å½“å‰é€‰æ‹©:Player V Player");
             boardGui->setGameMode(GameMode::PvP);
             boardGui->setGameStatus(GameStatus::Running);
             change_to_replay();
         }
         if(modeChoice->value()==1){
-            display("µ±Ç°Ñ¡Ôñ:Player V Computer");
+            display("å½“å‰é€‰æ‹©:Player V Computer");
             boardGui->setGameMode(GameMode::PvAI);
             playButton->label("FirstMove");
             modeChoice->clear();
@@ -221,7 +221,7 @@ void GameGUI::send_game_mode() {
             is_play= false;
         }
         if(modeChoice->value()==2){
-            display("µ±Ç°Ñ¡Ôñ:Computer V Computer");
+            display("å½“å‰é€‰æ‹©:Computer V Computer");
             boardGui->setGameMode(GameMode::AIvAI);
             boardGui->setGameStatus(GameStatus::Running);
             change_to_replay();
@@ -229,19 +229,19 @@ void GameGUI::send_game_mode() {
     }
     else{
         if(modeChoice->value()==-1){
-            display("Î´Ñ¡ÔñÏÈÊÖ,ÎŞ·¨¿ªÊ¼ÓÎÏ·");
+            display("æœªé€‰æ‹©å…ˆæ‰‹,æ— æ³•å¼€å§‹æ¸¸æˆ");
             return;
         }
         if(modeChoice->value()==0){
             boardGui->setGameMode(GameMode::PvAI);
-            display("µ±Ç°Ñ¡Ôñ:PlayerÏÈÊÖ");
+            display("å½“å‰é€‰æ‹©:Playerå…ˆæ‰‹");
             boardGui->setPlayerFirst(true);
             boardGui->setGameStatus(GameStatus::Running);
             change_to_replay();
         }
         if(modeChoice->value()==1){
             boardGui->setGameMode(GameMode::PvAI);
-            display("µ±Ç°Ñ¡Ôñ:ComputerÏÈÊÖ");
+            display("å½“å‰é€‰æ‹©:Computerå…ˆæ‰‹");
             boardGui->setPlayerFirst(false);
             boardGui->setGameStatus(GameStatus::Running);
             change_to_replay();
@@ -275,15 +275,15 @@ const std::vector<std::string> &GameGUI::getStrings() const {
 }
 
 void GameGUI::replay_game() {
-    //ÆôÓÃ°´Å¥
+    //å¯ç”¨æŒ‰é’®
     horizontalButton->activate();
     verticalButton->activate();
     diagonalButton->activate();
     sendButton->activate();
     randomButton->activate();
-    //Çå³şÎÄ±¾ÄÚÈİ
+    //æ¸…é™¤æ–‡æœ¬å†…å®¹
     while (!strings.empty()) strings.pop_back();
-    //µ÷ÓÃÆåÅÌreplay·½·¨
+    //è°ƒç”¨æ£‹ç›˜replayæ–¹æ³•
     boardGui->replay();
 }
 

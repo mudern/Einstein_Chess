@@ -147,7 +147,7 @@ void BoardGUI::display_move(Camp _camp_1, std::pair<int, int> _position, int _ch
     std::ostringstream oss;
 
     oss << (_camp_1 == Camp::Red ? "红方" : "蓝方") << _chess_1 << "号棋子"
-        << "移动到位置" << "(" << _position.first << "," << _position.second << ") 吃掉"
+        << "移动到位置" << "(" << _position.first << "," << _position.second << ")吃掉"
         << (_camp_2 == Camp::Red ? "红方" : "蓝方") << _chess_2 << "号棋子";
 
     display(oss.str());
@@ -294,6 +294,7 @@ std::optional<std::pair<int, int>> BoardGUI::validate_and_get_choice(int chess_n
 
 bool BoardGUI::isComputer() {
     if(game_mode==AIvAI) return true;
+    else if(game_mode==PvP) return false;
     else{
         if(player_first&&board->getNowCamp()==Camp::Blue){
             return true;
