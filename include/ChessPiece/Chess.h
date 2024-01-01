@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <optional>
+#include <vector>
 #include "PieceAttributes.h"
 
 /*
@@ -33,11 +34,17 @@ public:
      [[nodiscard]] std::pair<int, int> getPosition() const;
      [[nodiscard]] bool isAlive() const;
      void setIsAlive(bool status);
+     void setPosition(const std::pair<int, int> &position);
     //棋子移动方法
     bool move(Move _move_kind);
     bool move(std::pair<int,int> _position);
     //返回预期的移动位置
     std::optional<std::pair<int,int>> getExpectedPosition(Move _move_kind);
+    //生成指定阵营的指定棋子的所有走法
+    std::vector<MoveChoice> generate_move_choice();
+    //重新游玩方法
+    void replay(std::pair<int,int> pos);
+
 private:
     /*
      * 检测移动是否合法,可以接收移动类型和位置两种参数进行判断

@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include "include/GameGUI/GameGUI.h"
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         for (auto chess : blue_chess) {
             std::cout << chess << " ";
         }
-        GameGUI *game = new GameGUI(red_chess, blue_chess);
+        auto *game = new GameGUI(red_chess, blue_chess);
         game->start();
     }
 }

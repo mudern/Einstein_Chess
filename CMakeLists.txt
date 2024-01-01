@@ -34,8 +34,14 @@ include_directories(${INC_DIR_CHESS_PIECE_GUI})
 #声明GameGUI头文件路径
 set(INC_DIR_Game_GUI ./GameGUI)
 
-#引入ChessPiece头文件
+#引入GameGUI头文件
 include_directories(${INC_DIR_Game_GUI})
+
+#声明AI头文件路径
+set(INC_DIR_AI_GUI ./AI)
+
+#引入GameGUI头文件
+include_directories(${INC_DIR_AI_GUI})
 
 set(Sources
         ./src/ChessPiece/Board.cpp
@@ -43,7 +49,7 @@ set(Sources
         ./src/ChessPieceGUI/BoardGUI.cpp
         ./src/ChessPieceGUI/ChessGUI.cpp
         ./src/GameGUI/GameGUI.cpp
-        )
+        ./src/AI/MonteCarloAI.cpp)
 
 add_executable(Einstein_Chess main.cpp ${Sources})
 

@@ -13,7 +13,9 @@
 
 bool BoardGUI::move(std::pair<int,int> _position) {
     if(this->game_status!=GameStatus::Running) return false;
-    Chess &chess = getSelectedChess();
+    Chess &chess = board->getSelectedChess();
+    Camp now_camp=board->getNowCamp();
+    int selected_chess=board->getSelectedChessNum();
     // 尝试移动棋子到指定位置
     if (chess.move(_position)) {
         if(board->isOverlap(&chess,chess.getPosition())){
@@ -23,9 +25,15 @@ bool BoardGUI::move(std::pair<int,int> _position) {
             over_lap_chess->setIsAlive(false);
             if(chess_info.first==Camp::Red) red_chess_widgets[chess_info.second-1]->update();
             else blue_chess_widgets[chess_info.second-1]->update();
-            display_move(now_camp,chess.getPosition(),selected_chess,chess_info.first,chess_info.second);
+            display_move(now_camp,
+                         chess.getPosition(),
+                         selected_chess,
+                         chess_info.first,
+                         chess_info.second);
         }else {
-            display_move(now_camp,chess.getPosition(),selected_chess);
+            display_move(now_camp,
+                         chess.getPosition(),
+                         selected_chess);
         }
         // 如果移动成功，切换到下一个阵营并更新 ChessGUI 中的 Chess 引用
         if(now_camp==Camp::Red){
@@ -39,16 +47,18 @@ bool BoardGUI::move(std::pair<int,int> _position) {
             return true;
         }
         toNextCamp();
-        selected_chess=-1;
+        board->setSelectedChessNum(-1);
         return true;
     }
     return false;
 }
 
 bool BoardGUI::move(Move _move_kind) {
+    Camp now_camp=board->getNowCamp();
+    int selected_chess=board->getSelectedChessNum();
     if(this->game_status!=GameStatus::Running) return false;
     if(selected_chess<1||selected_chess>6) return false;
-    Chess &chess = getSelectedChess();
+    Chess &chess = board->getSelectedChess();
     // 尝试移动棋子到指定位置
     if (chess.move(_move_kind)){
         if(board->isOverlap(&chess,chess.getPosition())){
@@ -58,9 +68,14 @@ bool BoardGUI::move(Move _move_kind) {
             over_lap_chess->setIsAlive(false);
             if(chess_info.first==Camp::Red) red_chess_widgets[chess_info.second-1]->update();
             else blue_chess_widgets[chess_info.second-1]->update();
-            display_move(now_camp,chess.getPosition(),selected_chess,chess_info.first,chess_info.second);
+            display_move(now_camp,
+                         chess.getPosition(),
+                         selected_chess,chess_info.first,
+                         chess_info.second);
         }else {
-            display_move(now_camp,chess.getPosition(),selected_chess);
+            display_move(now_camp,
+                         chess.getPosition(),
+                         selected_chess);
         }
         // 如果移动成功，切换到下一个阵营并更新 ChessGUI 中的 Chess 引用
         if(now_camp==Camp::Red){
@@ -74,26 +89,26 @@ bool BoardGUI::move(Move _move_kind) {
             return true;
         }
         toNextCamp();
-        selected_chess=-1;
+        board->setSelectedChessNum(selected_chess-1);
         return true;
     }
     return false;
 }
 
 void BoardGUI::computer_move() {
-    std::vector<Chess> red_chess=board->getChessRedCollection();
-    std::vector<Chess> blue_chess=board->getChessBlueCollection();
-    //move();
+    Decision computer_move=MonteCarloAI::decide(*board,
+                                                 board->getNowCamp(),
+                                                 board->getSelectedChessNum(),
+                                                 3000);
+    auto computer_move_kind=computer_move.move_kind;
+    display("AI引擎该步胜率预测"+std::to_string(computer_move.win_rates));
+    move(computer_move_kind);
 }
 
 void BoardGUI::toNextCamp() {
-    std::swap(now_camp,next_camp);
+    board->toNextCamp();
     gameGui->update_num();
     display_camp();
-}
-
-Chess & BoardGUI::getSelectedChess() {
-    return board->getChess(now_camp,selected_chess);
 }
 
 BoardGUI::BoardGUI(GameGUI* game,std::vector<int> red_chess,std::vector<int> blue_chess){
@@ -150,17 +165,9 @@ void BoardGUI::display_move(Camp _camp_1, std::pair<int, int> _position, int _ch
 void BoardGUI::display_camp() {
     std::string context;
     context+="当前为:";
-    if(now_camp==Camp::Red) context+="红方";
+    if(board->getNowCamp()==Camp::Red) context+="红方";
     else context+="蓝方";
     display(context);
-}
-
-std::vector<int> BoardGUI::send_alive_chess() {
-    std::vector<int> alive_chess;
-    for (int serial_num = 1; serial_num <= 6; ++serial_num) {
-        if(board->getChess(now_camp,serial_num).isAlive()) alive_chess.push_back(serial_num);
-    }
-    return alive_chess;
 }
 
 void BoardGUI::end_game() {
@@ -195,7 +202,7 @@ void BoardGUI::save_log() {
         content += "Computer V Computer\n";
     }
     std::vector<std::string> strings = gameGui->getStrings();
-    for (auto str : strings) {
+    for (const auto& str : strings) {
         content += (str+"\n");
     }
     // 构建文件夹的完整路径
@@ -225,18 +232,10 @@ void BoardGUI::save_log() {
 }
 
 void BoardGUI::setSelectedChess(int selectedChess) {
-    if(game_mode==GameMode::PvAI){
-        if(player_first&&now_camp==Camp::Blue){
-            computer_move();
-        }
-        else if(!player_first&&now_camp==Camp::Red){
-            computer_move();
-        }
-    }
-    else if(game_mode==GameMode::AIvAI){
+    board->setSelectedChessNum(selectedChess);
+    if(isComputer()){
         computer_move();
     }
-    selected_chess = selectedChess;
 }
 
 void BoardGUI::setGameMode(GameMode gameMode) {
@@ -248,12 +247,8 @@ void BoardGUI::setGameStatus(GameStatus gameStatus) {
     game_status = gameStatus;
 }
 
-void BoardGUI::setNowCamp(Camp nowCamp) {
-    now_camp = nowCamp;
-}
-
 Camp BoardGUI::getNowCamp() const {
-    return now_camp;
+    return board->getNowCamp();
 }
 
 GameStatus BoardGUI::getGameStatus() const {
@@ -262,6 +257,52 @@ GameStatus BoardGUI::getGameStatus() const {
 
 void BoardGUI::setPlayerFirst(bool playerFirst) {
     player_first = playerFirst;
+}
+
+void BoardGUI::replay() {
+    board->replay();
+    //遍历红方更新gui
+    for(auto chess_gui:red_chess_widgets){
+        chess_gui->update();
+    }
+    //遍历蓝方更新gui
+    for(auto chess_gui:blue_chess_widgets){
+        chess_gui->update();
+    }
+    setGameStatus(GameStatus::Running);
+}
+
+std::optional<std::pair<int, int>> BoardGUI::validate_and_get_choice(int chess_num) {
+    auto res=board->validate_and_get_choice(chess_num);
+    if(!res) return std::nullopt;
+    int choice_1=res->first,choice_2=res->second;
+    //如果是AI走棋并且走棋选项为两个
+    if(isComputer()&&(choice_1!=-1&&choice_2!=-1)){
+        auto decision_1=MonteCarloAI::decide(*board,
+                                             board->getNowCamp(),
+                                             choice_1,
+                                             500);
+        auto decision_2=MonteCarloAI::decide(*board,
+                                             board->getNowCamp(),
+                                             choice_2,
+                                             500);
+        if(decision_1.win_rates>=decision_2.win_rates) res={choice_1,-1};
+        else res={-1,choice_2};
+    }
+    return res;
+}
+
+bool BoardGUI::isComputer() {
+    if(game_mode==AIvAI) return true;
+    else{
+        if(player_first&&board->getNowCamp()==Camp::Blue){
+            return true;
+        }
+        if(!player_first&&board->getNowCamp()==Camp::Red){
+            return true;
+        }
+    }
+    return false;
 }
 
 BoardPiece::BoardPiece(int a, int b, int x, int y, int w, int h, BoardGUI *board)

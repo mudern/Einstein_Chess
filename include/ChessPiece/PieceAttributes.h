@@ -25,4 +25,21 @@ enum Camp{
     //蓝色在右下角
     Blue,
 };
+
+struct MoveChoice {
+    Camp camp;
+    int selected_num;
+    Move move_kind;
+};
+
+struct Decision {
+    Camp camp;
+    int chess_num;
+    Move move_kind;
+    long double win_rates;
+
+    Decision(const MoveChoice& _move_choice, long double _win_rates)
+            : camp(_move_choice.camp), chess_num(_move_choice.selected_num),
+              move_kind(_move_choice.move_kind), win_rates(_win_rates) {}
+};
 #endif //EINSTEIN_CHESS_PIECE_ATTRIBUTES_H

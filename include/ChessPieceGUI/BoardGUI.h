@@ -13,6 +13,7 @@
 #include "ChessGUI.h"
 #include "../ChessPiece/Board.h"
 #include "../GameGUI/GameGUI.h"
+#include "../AI/MonteCarloAI.h"
 
 class BoardPiece;
 
@@ -43,13 +44,6 @@ private:
     Board *board;
     //存储BoardPiece
     std::vector<BoardPiece*> board_pieces;
-    //存储当前被选中棋子信息
-    int selected_chess=-1;
-    //存储当前操作的阵营
-    Camp now_camp=Camp::Red;
-    Camp next_camp=Camp::Blue;
-    //存储当前输入的值
-    std::optional<int> input_chess_serial_num=std::nullopt;
     //修改游戏下拉框选项
     GameGUI *gameGui;
     //判断游戏模式和游戏状态
@@ -60,20 +54,21 @@ private:
 public:
     BoardGUI(GameGUI* game,std::vector<int> red_chess,std::vector<int> blue_chess);
     void setGameMode(GameMode gameMode);
-    void setSelectedChess(int selectedChess);
     void setGameStatus(GameStatus gameStatus);
-    GameStatus getGameStatus() const;
-    void setNowCamp(Camp nowCamp);
-    Camp getNowCamp() const;
+    void setSelectedChess(int selectedChess);
+    [[nodiscard]] GameStatus getGameStatus() const;
+    [[nodiscard]] Camp getNowCamp() const;
+    void toNextCamp();
     void setPlayerFirst(bool humanFirst);
-
     bool move(std::pair<int,int> _position);
     bool move(Move _move_kind);
-    void toNextCamp();
-    Chess & getSelectedChess();
-    std::vector<int> send_alive_chess();
+    std::optional<std::pair<int,int>> validate_and_get_choice(int chess_num);
+    void replay();
 private:
+    //AI移动棋子
     void computer_move();
+    //当前是否为AI操作
+    bool isComputer();
     void display_move(Camp _camp_1,std::pair<int,int> _position,int _chess_1,Camp _camp_2, int _chess_2);
     void display_move(Camp _camp_1,std::pair<int,int> _position,int _chess_1);
     void display_camp();

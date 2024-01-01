@@ -28,6 +28,9 @@ bool Chess::isAlive() const {
 void Chess::setIsAlive(bool _status) {
     is_alive = _status;
 }
+void Chess::setPosition(const std::pair<int, int> &position) {
+    Chess::position = position;
+}
 
 //棋子移动方法
 bool Chess::move(Move _move_kind){
@@ -130,4 +133,17 @@ std::optional<Move> Chess::getMoveKind(std::pair<int, int> _position) {
         if (difference == std::pair<int, int>(-1, -1))move_kind = Diagonal;
     }
     return move_kind;
+}
+
+void Chess::replay(std::pair<int,int> pos) {
+    this->setIsAlive(true);
+    this->position=pos;
+}
+
+std::vector<MoveChoice> Chess::generate_move_choice() {
+    std::vector<MoveChoice> choices;
+    if(canMove(Move::Horizontal)) choices.push_back(MoveChoice{camp,serial_num,Horizontal});
+    if(canMove(Move::Vertical)) choices.push_back(MoveChoice{camp,serial_num,Vertical});
+    if(canMove(Move::Diagonal)) choices.push_back(MoveChoice{camp,serial_num,Diagonal});
+    return choices;
 }

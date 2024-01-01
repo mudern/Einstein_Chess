@@ -42,9 +42,10 @@ private:
     Fl_Text_Buffer *textBuffer;
     // 文本内容
     std::vector<std::string> strings;
+    //选择棋子是否被接收
+    bool accept=true;
 public:
-    const std::vector<std::string> &getStrings() const;
-
+    [[nodiscard]] const std::vector<std::string> &getStrings() const;
 private:
     //playButton状态
     bool is_play= true;
@@ -53,18 +54,21 @@ public:
     //开始游戏
     void start();
     //传输信息事件
-    void display(std::string str);
+    void display(const std::string& str);
     //更新下拉条内容
     void update_num();
     //结束游戏
     void end_game();
+    //重新开始游戏
+    void replay_game();
 private:
     static void horizontalButtonClick(Fl_Widget* widget, void* data);
     static void verticalButtonClick(Fl_Widget* widget, void* data);
-    static void diagonalButtonClcik(Fl_Widget* widget, void* data);
+    static void diagonalButtonClick(Fl_Widget* widget, void* data);
     static void sendButtonClcik(Fl_Widget* widget, void* data);
     static void randomButtonClick(Fl_Widget* widget, void* data);
     static void playButtonClick(Fl_Widget* widget, void* data);
+    static void replayButtonClick(Fl_Widget* widget, void* data);
 
     void generate_num();
     void send_num();
@@ -72,6 +76,7 @@ private:
     void horizontal_move();
     void vertical_move();
     void diagonal_move();
+    void change_to_replay();
 };
 
 #endif //EINSTEIN_CHESS_GAMEGUI_H
