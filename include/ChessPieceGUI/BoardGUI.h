@@ -64,6 +64,7 @@ public:
     bool move(Move _move_kind);
     std::optional<std::pair<int,int>> validate_and_get_choice(int chess_num);
     void replay();
+    void regret_once();
 private:
     //AI移动棋子
     void computer_move();

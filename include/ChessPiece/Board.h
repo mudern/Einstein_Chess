@@ -51,6 +51,8 @@ public:
     const std::vector<Chess> &getChessBlueCollection() const;
     Camp getNowCamp() const;
     void setSelectedChessNum(int selectedChess);
+    void setRedLastInfo(const ChessMap &redLastInfo);
+    void setBlueLastInfo(const ChessMap &blueLastInfo);
     int getSelectedChessNum() const;
     Chess & getSelectedChess();
     std::pair<ChessMap,ChessMap> get_now_info();

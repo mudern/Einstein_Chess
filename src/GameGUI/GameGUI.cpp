@@ -131,6 +131,11 @@ void GameGUI::replayButtonClick(Fl_Widget *widget, void *data) {
     instance->replay_game();
 }
 
+void GameGUI::regretButtonClick(Fl_Widget *widget, void *data) {
+    auto* instance = static_cast<GameGUI*>(data);
+    instance->regret_game();
+}
+
 void GameGUI::display(const std::string& str) {
     strings.push_back(str);
     std::string combined_string;
@@ -209,7 +214,7 @@ void GameGUI::send_game_mode() {
             display("当前选择:Player V Player");
             boardGui->setGameMode(GameMode::PvP);
             boardGui->setGameStatus(GameStatus::Running);
-            change_to_replay();
+            change_to_regret();
         }
         if(modeChoice->value()==1){
             display("当前选择:Player V Computer");
@@ -224,7 +229,7 @@ void GameGUI::send_game_mode() {
             display("当前选择:Computer V Computer");
             boardGui->setGameMode(GameMode::AIvAI);
             boardGui->setGameStatus(GameStatus::Running);
-            change_to_replay();
+            change_to_regret();
         }
     }
     else{
@@ -237,14 +242,14 @@ void GameGUI::send_game_mode() {
             display("当前选择:Player先手");
             boardGui->setPlayerFirst(true);
             boardGui->setGameStatus(GameStatus::Running);
-            change_to_replay();
+            change_to_regret();
         }
         if(modeChoice->value()==1){
             boardGui->setGameMode(GameMode::PvAI);
             display("当前选择:Computer先手");
             boardGui->setPlayerFirst(false);
             boardGui->setGameStatus(GameStatus::Running);
-            change_to_replay();
+            change_to_regret();
         }
     }
 }
@@ -287,9 +292,20 @@ void GameGUI::replay_game() {
     boardGui->replay();
 }
 
+void GameGUI::regret_game() {
+    boardGui->regret_once();
+}
+
 void GameGUI::change_to_replay() {
     playButton->label("Replay");
     playButton->callback(replayButtonClick);
+    playButton->activate();
+    update_num();
+}
+
+void GameGUI::change_to_regret() {
+    playButton->label("Regret");
+    playButton->callback(regretButtonClick);
     playButton->activate();
     update_num();
 }

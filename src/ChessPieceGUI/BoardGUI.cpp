@@ -16,6 +16,10 @@ bool BoardGUI::move(std::pair<int,int> _position) {
     Chess &chess = board->getSelectedChess();
     Camp now_camp=board->getNowCamp();
     int selected_chess=board->getSelectedChessNum();
+    //遍历保存悔棋状态
+    auto [red_info,blue_info]=board->get_now_info();
+    board->setRedLastInfo(red_info);
+    board->setBlueLastInfo(blue_info);
     // 尝试移动棋子到指定位置
     if (chess.move(_position)) {
         if(board->isOverlap(&chess,chess.getPosition())){
@@ -59,6 +63,10 @@ bool BoardGUI::move(Move _move_kind) {
     if(this->game_status!=GameStatus::Running) return false;
     if(selected_chess<1||selected_chess>6) return false;
     Chess &chess = board->getSelectedChess();
+    //遍历保存悔棋状态
+    auto [red_info,blue_info]=board->get_now_info();
+    board->setRedLastInfo(red_info);
+    board->setBlueLastInfo(blue_info);
     // 尝试移动棋子到指定位置
     if (chess.move(_move_kind)){
         if(board->isOverlap(&chess,chess.getPosition())){
@@ -89,7 +97,7 @@ bool BoardGUI::move(Move _move_kind) {
             return true;
         }
         toNextCamp();
-        board->setSelectedChessNum(selected_chess-1);
+        board->setSelectedChessNum(-1);
         return true;
     }
     return false;
@@ -129,12 +137,12 @@ BoardGUI::BoardGUI(GameGUI* game,std::vector<int> red_chess,std::vector<int> blu
     this->board=new Board(std::move(red_chess),std::move(blue_chess));
     //设置红方ChessGUI
     for (int serial_num = 1; serial_num <= 6; ++serial_num) {
-        ChessGUI *chessGui=new ChessGUI(&board->getChess(Camp::Red,serial_num));
+        auto *chessGui=new ChessGUI(&board->getChess(Camp::Red,serial_num));
         this->red_chess_widgets.push_back(chessGui);
     }
     //设置蓝方ChessGUI
     for (int serial_num = 1; serial_num <= 6; ++serial_num) {
-        ChessGUI *chessGui=new ChessGUI(&board->getChess(Camp::Blue,serial_num));
+        auto *chessGui=new ChessGUI(&board->getChess(Camp::Blue,serial_num));
         this->blue_chess_widgets.push_back(chessGui);
     }
 }
@@ -272,9 +280,24 @@ void BoardGUI::replay() {
     setGameStatus(GameStatus::Running);
 }
 
+void BoardGUI::regret_once() {
+    board->regret_once();
+    //遍历红方更新gui
+    for(auto chess_gui:red_chess_widgets){
+        chess_gui->update();
+    }
+    //遍历蓝方更新gui
+    for(auto chess_gui:blue_chess_widgets){
+        chess_gui->update();
+    }
+    if(board->getNowCamp()==Camp::Blue) display("蓝方进行悔棋操作");
+    if(board->getNowCamp()==Camp::Red) display("红方进行悔棋操作");
+    display_camp();
+}
+
 std::optional<std::pair<int, int>> BoardGUI::validate_and_get_choice(int chess_num) {
     auto res=board->validate_and_get_choice(chess_num);
-    if(!res) return std::nullopt;
+    if(!res.has_value()) return std::nullopt;
     int choice_1=res->first,choice_2=res->second;
     //如果是AI走棋并且走棋选项为两个
     if(isComputer()&&(choice_1!=-1&&choice_2!=-1)){

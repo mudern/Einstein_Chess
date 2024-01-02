@@ -61,6 +61,8 @@ public:
     void end_game();
     //重新开始游戏
     void replay_game();
+    //进行一次悔棋
+    void regret_game();
 private:
     static void horizontalButtonClick(Fl_Widget* widget, void* data);
     static void verticalButtonClick(Fl_Widget* widget, void* data);
@@ -69,6 +71,7 @@ private:
     static void randomButtonClick(Fl_Widget* widget, void* data);
     static void playButtonClick(Fl_Widget* widget, void* data);
     static void replayButtonClick(Fl_Widget* widget, void* data);
+    static void regretButtonClick(Fl_Widget* widget, void* data);
 
     void generate_num();
     void send_num();
@@ -77,6 +80,7 @@ private:
     void vertical_move();
     void diagonal_move();
     void change_to_replay();
+    void change_to_regret();
 };
 
 #endif //EINSTEIN_CHESS_GAMEGUI_H

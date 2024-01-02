@@ -37,6 +37,7 @@ Chess &Board::getSelectedChess() {
 }
 
 void Board::toNextCamp() {
+    setSelectedChessNum(-1);
     std::swap(now_camp,next_camp);
 }
 
@@ -92,16 +93,16 @@ Chess & Board::getChess(Camp _camp, int _serial_num) {
 
 std::optional<std::pair<Camp,int>> Board::isOverlap(Chess *_chess,std::pair<int,int> _expected_position){
     //遍历棋子位置,判断是否有重叠棋子,如果有,返回该棋子
-    for(int serial_num=0;serial_num<6;serial_num++){
-        Chess &chess=chess_red_collection[serial_num];
+    for(int serial_num=1;serial_num<=6;serial_num++){
+        Chess &chess= getChess(Red,serial_num);
         if(chess.isAlive()&&chess.getPosition()==_expected_position&& &chess!=_chess){
-            return std::make_pair(Camp::Red,serial_num+1);
+            return std::make_pair(Camp::Red,serial_num);
         }
     }
-    for(int serial_num=0;serial_num<6;serial_num++){
-        Chess &chess=chess_blue_collection[serial_num];
+    for(int serial_num=1;serial_num<=6;serial_num++){
+        Chess &chess=getChess(Blue,serial_num);
         if(chess.isAlive()&&chess.getPosition()==_expected_position&& &chess!=_chess){
-            return std::make_pair(Camp::Blue,serial_num+1);
+            return std::make_pair(Camp::Blue,serial_num);
         }
     }
     return std::nullopt;
@@ -110,17 +111,17 @@ std::optional<std::pair<Camp,int>> Board::isOverlap(Chess *_chess,std::pair<int,
 //移动棋盘上的棋子.检测移动后的位置是否存在棋子,检测是否会移出棋盘
 bool Board::moveChess(Camp _camp, int _serial_num, Move _move_kind) {
     //获取棋子信息,得到需要移动的棋子
+    if(_serial_num<1||_serial_num>6) return false;
     Chess &chess = getChess(_camp,_serial_num);
     //如果棋子不能移动到指定位置,getExpectedPosition将返回空值
     if(!chess.move(_move_kind)) return false;
-    std::pair<int,int> expected_position =*chess.getExpectedPosition(_move_kind);
+    if(!chess.getExpectedPosition(_move_kind).has_value()) return false;
+    std::pair<int,int> expected_position =chess.getExpectedPosition(_move_kind).value();
     //如果棋子重叠则需要标记对方为死亡
     if(isOverlap(&chess,expected_position)){
-        auto chess_info=isOverlap(&chess,expected_position);
-        Chess *over_lap_chess;
-        if(chess_info->first==Camp::Red)over_lap_chess=&chess_red_collection[chess_info->second];
-        else over_lap_chess=&chess_blue_collection[chess_info->second];
-        over_lap_chess->setIsAlive(false);
+        auto chess_info=isOverlap(&chess,expected_position).value();
+        Chess& over_lap_chess= getChess(chess_info.first, chess_info.second);
+        over_lap_chess.setIsAlive(false);
     }
     //棋子正常移动
     bool move_result=chess.move(_move_kind);
@@ -143,11 +144,9 @@ bool Board::moveChess(Camp _camp, int _serial_num, std::pair<int, int> _position
     if(!chess.move(_position)) return false;
     //如果棋子重叠则需要标记对方为死亡
     if(isOverlap(&chess,_position)){
-        auto chess_info=isOverlap(&chess,_position);
-        Chess *over_lap_chess;
-        if(chess_info->first==Camp::Red)over_lap_chess=&chess_red_collection[chess_info->second];
-        else over_lap_chess=&chess_blue_collection[chess_info->second];
-        over_lap_chess->setIsAlive(false);
+        auto chess_info=isOverlap(&chess,_position).value();
+        Chess& over_lap_chess= getChess(chess_info.first, chess_info.second);
+        over_lap_chess.setIsAlive(false);
     }
     bool move_result=chess.move(_position);
     winner=hasWinner();
@@ -155,13 +154,27 @@ bool Board::moveChess(Camp _camp, int _serial_num, std::pair<int, int> _position
 }
 
 std::optional<Camp> Board::hasWinner() {
-    if(chess_red_collection.empty()) return Camp::Blue;
-    if(chess_blue_collection.empty()) return Camp::Red;
-    for(auto chess:chess_red_collection){
-        if(chess.getPosition() == std::pair<int,int>{5, 5}) return Camp::Red;
+    bool all_dead= true;
+    for (const auto& chess : chess_blue_collection) {
+        if (chess.isAlive()){
+            all_dead= false;
+            break;
+        }
     }
-    for(auto chess:chess_blue_collection){
-        if(chess.getPosition() == std::pair<int,int>{1, 1}) return Camp::Blue;
+    if(all_dead) return Camp::Blue;
+    all_dead= true;
+    for (const auto& chess : chess_red_collection) {
+        if (chess.isAlive()){
+            all_dead= false;
+            break;
+        }
+    }
+    if(all_dead) return Camp::Red;
+    for (const auto& chess : chess_red_collection) {
+        if (chess.getPosition() == std::pair<int, int>{5, 5}) return Camp::Red;
+    }
+    for (const auto& chess : chess_blue_collection) {
+        if (chess.getPosition() == std::pair<int, int>{1, 1}) return Camp::Blue;
     }
     return std::nullopt;
 }
@@ -189,13 +202,12 @@ void Board::randomMove(std::random_device &rd) {
         if (first_choice!=-1 && second_choice!=-1) {
             std::uniform_int_distribution<int> coin_flip(0, 1);
             int random_index = coin_flip(gen); // 随机选择两个中的一个
-
             random_chess = getChess(now_camp, (random_index == 0) ? first_choice : second_choice);
         }
-        if (first_choice==-1) {
+        else if (first_choice==-1&&second_choice!=-1) {
             random_chess = getChess(now_camp, second_choice);
         }
-        if (second_choice==-1) {
+        else {
             random_chess = getChess(now_camp, first_choice);
         }
     }
@@ -233,6 +245,15 @@ std::optional<std::pair<int,int>> Board::validate_and_get_choice(int chess_num) 
     auto res=std::make_pair(-1,-1);
     if (!smaller_chess.empty()) res.first = *(--smaller_chess.end());
     if (!bigger_chess.empty()) res.second = *(bigger_chess.begin());
+    if(res.first!=-1&&res.second!=-1){
+        if(res.second-chess_num!=chess_num-res.first){
+            if(res.second-chess_num<chess_num-res.first){
+                res.first=-1;
+            }else{
+                res.second=-1;
+            }
+        }
+    }
     return res;
 }
 
@@ -247,12 +268,12 @@ std::vector<int> Board::send_alive_chess() {
 void Board::regret(ChessMap red_info,
                    ChessMap blue_info) {
     for (int serial_num=1;serial_num<=6;serial_num++){
-        Chess &chess=chess_red_collection[serial_num-1];
+        Chess &chess= getChess(Red,serial_num);
         chess.setPosition(red_info[serial_num].position);
         chess.setIsAlive(red_info[serial_num].isAlive);
     }
     for (int serial_num=1;serial_num<=6;serial_num++){
-        Chess &chess=chess_blue_collection[serial_num-1];
+        Chess &chess=getChess(Blue,serial_num);
         chess.setPosition(blue_info[serial_num].position);
         chess.setIsAlive(blue_info[serial_num].isAlive);
     }
@@ -269,4 +290,26 @@ std::pair<ChessMap, ChessMap> Board::get_now_info() {
         blue_chess_map[serial_num]=ChessInfo{chess.getPosition(),chess.isAlive()};
     }
     return std::make_pair(red_chess_map,blue_chess_map);
+}
+
+void Board::setRedLastInfo(const ChessMap &redLastInfo) {
+    red_last_info = redLastInfo;
+}
+
+void Board::setBlueLastInfo(const ChessMap &blueLastInfo) {
+    blue_last_info = blueLastInfo;
+}
+
+void Board::regret_once() {
+    for(int serial_num=1;serial_num<=6;serial_num++){
+        Chess& chess= getChess(Red,serial_num);
+        chess.setIsAlive(red_last_info[serial_num].isAlive);
+        chess.setPosition(red_last_info[serial_num].position);
+    }
+    for(int serial_num=1;serial_num<=6;serial_num++){
+        Chess& chess= getChess(Blue,serial_num);
+        chess.setIsAlive(blue_last_info[serial_num].isAlive);
+        chess.setPosition(blue_last_info[serial_num].position);
+    }
+    toNextCamp();
 }
