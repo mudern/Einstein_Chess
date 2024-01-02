@@ -4,7 +4,6 @@
 
 #include <vector>
 #include "../../include/ChessPiece/Chess.h"
-#include "../../include/ChessPiece/PieceAttributes.h"
 Chess::Chess(Camp _camp,int _serial_num,std::pair<int,int> _position){
     camp=_camp;
     serial_num=_serial_num;
@@ -61,8 +60,14 @@ bool Chess::canMove(Move _move_kind){
         if (position.second == 1 && camp == Camp::Blue) return false;
     }
     else if(_move_kind==Move::Diagonal){
-        //只有既能水平移动也能垂直移动才能斜向移动
-        return canMove(Move::Horizontal) && canMove(Move::Vertical);
+        //红色方到达最右侧无法水平移动
+        if(position.first==5&&camp==Camp::Red) return false;
+        //蓝色方到达最左侧无法水平移动
+        if(position.first==1&&camp==Camp::Blue) return false;
+        //红色方到达最下侧无法垂直移动
+        if (position.second == 5 && camp == Camp::Red) return false;
+        //蓝色方到达最上侧无法垂直移动
+        if (position.second == 1 && camp == Camp::Blue) return false;
     }
     return true;
 }

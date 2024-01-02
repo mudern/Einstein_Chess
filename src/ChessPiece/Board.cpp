@@ -115,7 +115,7 @@ bool Board::moveChess(Camp _camp, int _serial_num, Move _move_kind) {
     if(!chess.move(_move_kind)) return false;
     std::pair<int,int> expected_position =*chess.getExpectedPosition(_move_kind);
     //如果棋子重叠则需要标记对方为死亡
-    if(!isOverlap(&chess,expected_position)){
+    if(isOverlap(&chess,expected_position)){
         auto chess_info=isOverlap(&chess,expected_position);
         Chess *over_lap_chess;
         if(chess_info->first==Camp::Red)over_lap_chess=&chess_red_collection[chess_info->second];
@@ -142,7 +142,7 @@ bool Board::moveChess(Camp _camp, int _serial_num, std::pair<int, int> _position
     //如果棋子不能移动到指定位置,getExpectedPosition将返回空值
     if(!chess.move(_position)) return false;
     //如果棋子重叠则需要标记对方为死亡
-    if(!isOverlap(&chess,_position)){
+    if(isOverlap(&chess,_position)){
         auto chess_info=isOverlap(&chess,_position);
         Chess *over_lap_chess;
         if(chess_info->first==Camp::Red)over_lap_chess=&chess_red_collection[chess_info->second];

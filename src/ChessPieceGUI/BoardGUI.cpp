@@ -99,7 +99,7 @@ void BoardGUI::computer_move() {
     Decision computer_move=MonteCarloAI::decide(*board,
                                                  board->getNowCamp(),
                                                  board->getSelectedChessNum(),
-                                                 3000);
+                                                 10000);
     auto computer_move_kind=computer_move.move_kind;
     display("AI引擎该步胜率预测"+std::to_string(computer_move.win_rates));
     move(computer_move_kind);
